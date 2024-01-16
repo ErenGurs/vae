@@ -1,5 +1,5 @@
 #
-# Written by Eren Gurses - 1/12/2024
+# Written by Eren Gurses - 1/14/2024
 #
 # For testing the model trained by train_vae.py (epoch#50 weights: results.model/vae_model_50.pth)
 #
@@ -34,7 +34,7 @@ celeb_transform = transforms.Compose([
     transforms.Resize(PATCH_SIZE),
     transforms.ToTensor(),])  # used when transforming image to tensor
 
-dataset = datasets.CelebA('/mnt/task_runtime/vae-torch-celeba/data/', split='all', download=True, transform=celeb_transform)
+dataset = datasets.CelebA('data/', split='all', download=True, transform=celeb_transform)
 #dataset = CelebA(CELEB_PATH, transform=celeb_transform, download=False, split='all')
 loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=1, shuffle=True)
 model = torch.load(MODEL_FILE, map_location=device)
