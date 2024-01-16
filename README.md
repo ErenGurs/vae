@@ -1,9 +1,9 @@
 
-# Variational AUto Encoders (VAE)
+# Variational Auto Encoders (VAE)
 
-Implements Variational Auto Encoder (VAE) and associated training code for CelebA, plus the inference code for latent space sampling. You need to get the [CelebA](https://github.com/AntixK/PyTorch-VAE/#:~:text=to%20download%20the-,file,-from%20google%20drive) data separately and unzip under `./data/` due to download restrictions imposed by Google.
+Implements Variational Auto Encoder (VAE) [Kingma and Welling's ["Auto-Encoding Variational Bayes"](https://arxiv.org/pdf/1312.6114.pdf)] and associated training code for CelebA, plus the inference code for latent space sampling. You need to get the [CelebA](https://github.com/AntixK/PyTorch-VAE/#:~:text=to%20download%20the-,file,-from%20google%20drive) data separately and unzip under `./data/` due to download restrictions imposed by Google.
 
-### How To Run:
+## How To Run:
 Set up the environment (using miniconda)
 ```
 $ conda create --name "vae" python=3.6.12
@@ -11,13 +11,15 @@ $ conda activate vae
 $ pip install -r requirements.txt
 ```
 
-Run training. If you don't specify any flags, it trains for `batch=128` and `epochs=50`. During training, generated reconstruction and random sampled results are saved under `results/` folder. Also the model weights after each epoch is saved under `results.model/` folder.
+## Running training: 
+If you don't specify any flags, it trains for `batch=128` and `epochs=50`. During training, generated reconstruction and random sampled results are saved under `results/` folder. Also the model weights after each epoch is saved under `results.model/` folder.
 
 ```
 $ python train_vae.py
 ```
 
-Running the inference. Interpolation results between two random CelebA pictures are saved as `rndpics_interpolate.{gif,png}`
+## Running the inference:
+Interpolation results between two random CelebA pictures are saved as `rndpics_interpolate.{gif,png}`
 ```
 python test_vae.py
 ```
@@ -25,24 +27,24 @@ Some examples of interpolation between two pictures by sampling from the latent 
 
 <table>
   <tr>
-    <td> <img src="examples1/rndpics_interpolate.png" width="1000"/> </td>
+    <td> <img src="examples/examples1/rndpics_interpolate.png" width="1000"/> </td>
   </tr>
   <tr>
-    <td> <img src="examples1/rndpics_interpolate.gif" width="200"/> </td>
-  </tr>
-
-  <tr>
-    <td> <img src="examples2/rndpics_interpolate.png" width="1000"/> </td>
-  </tr>
-  <tr>
-    <td> <img src="examples2/rndpics_interpolate.gif" width="200"/> </td>
+    <td> <img src="examples/examples1/rndpics_interpolate.gif" width="200"/> </td>
   </tr>
 
   <tr>
-    <td> <img src="examples3/rndpics_interpolate.png" width="1000"/> </td>
+    <td> <img src="examples/examples2/rndpics_interpolate.png" width="1000"/> </td>
   </tr>
   <tr>
-    <td> <img src="examples3/rndpics_interpolate.gif" width="200"/> </td>
+    <td> <img src="examples/examples2/rndpics_interpolate.gif" width="200"/> </td>
+  </tr>
+
+  <tr>
+    <td> <img src="examples/examples3/rndpics_interpolate.png" width="1000"/> </td>
+  </tr>
+  <tr>
+    <td> <img src="examples/examples3/rndpics_interpolate.gif" width="200"/> </td>
   </tr>
 </table>  
 
