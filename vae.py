@@ -1,4 +1,7 @@
-
+#
+# Written by Eren Gurses - 1/14/2024
+#
+# VAE network. Mainly based on https://github.com/AntixK/PyTorch-VAE/models/vanilla_vae.py
 
 import torch
 from torch import nn
@@ -15,16 +18,12 @@ class VAE(nn.Module):
         in_channels = 3
         modules = []
 
+        # Legacy Fully Connected (FC) encoder
         #self.fc1 = nn.Linear(784, 400)
         #self.fc21 = nn.Linear(400, 20)
         #self.fc22 = nn.Linear(400, 20)
         #self.fc3 = nn.Linear(20, 400)
         #self.fc4 = nn.Linear(400, 784)
-
-        # Build Encoder
-
-        # Build Decoder
-
 
         # Build Encoder
         for h_dim in hidden_dims:
@@ -39,7 +38,7 @@ class VAE(nn.Module):
 
         self.encoder = nn.Sequential(*modules)
 
-        # 5 conv layers defined by hidden_dims = [...] and each jhas stride=2, downscales input 64x64 to 2x2
+        # 5 conv layers defined by hidden_dims = [...] and each has stride=2, downscales input 64x64 to 2x2
         self.size_bottleneck = int(patch_size / pow(2, len(hidden_dims)))
         self.fc_mu = nn.Linear(hidden_dims[-1] * self.size_bottleneck * self.size_bottleneck, self.latent_dim)
         self.fc_var = nn.Linear(hidden_dims[-1] * self.size_bottleneck * self.size_bottleneck, self.latent_dim)
@@ -78,18 +77,25 @@ class VAE(nn.Module):
             nn.Sigmoid())        
 
     def encode(self, x):
+        """
+        Encodes the input by passing through the encoder network
+        and returns the latent codes.
+        :param input: (Tensor) Input tensor to encoder [N x C x H x W]
+        :return: (Tensor) List of latent codes
+        """
         result = self.encoder(x)
         result = torch.flatten(result, start_dim=1)
         mu = self.fc_mu(result)
         log_var = self.fc_var(result)
         return mu, log_var
 
-    def reparameterize(self, mu, log_var):
-        std = torch.exp(0.5 * log_var)
-        eps = torch.randn_like(std)
-        return eps * std + mu
-
     def decode(self, z):
+        """
+        Maps the given latent codes
+        onto the image space.
+        :param z: (Tensor) [B x D]
+        :return: (Tensor) [B x C x H x W]
+        """
         result = self.decoder_input(z)
         result = result.view(-1, self.final_dim, self.size_bottleneck, self.size_bottleneck)
         result = self.decoder(result)
@@ -99,8 +105,19 @@ class VAE(nn.Module):
         #result = torch.nan_to_num(result)
         return result
 
+    def reparameterize(self, mu, log_var):
+        """
+        Reparameterization trick to sample from N(mu, var) from
+        N(0,1).
+        :param mu: (Tensor) Mean of the latent Gaussian [B x D]
+        :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
+        :return: (Tensor) [B x D]
+        """
+        std = torch.exp(0.5 * log_var)
+        eps = torch.randn_like(std)
+        return eps * std + mu
+
     def forward(self, x):
         mu, log_var = self.encode(x)
         z = self.reparameterize(mu, log_var)
         return self.decode(z), mu, log_var
-        #return x

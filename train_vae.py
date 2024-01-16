@@ -1,24 +1,8 @@
-# Written by Eren Gurses
+# Written by Eren Gurses - 1/12/2024
 #
-# Code is based on:
-#   1) From Official Pytorch examples (https://pytorch.org/examples/):
-#       - https://github.com/pytorch/examples/tree/main/vae
-#   2) Some inference code from Moshe Sipper.
-#       - Medium post:
-#         https://medium.com/the-generator/a-basic-variational-autoencoder-in-pytorch-trained-on-the-celeba-dataset-f29c75316b26)
-#       - Github:
-#         https://github.com/moshesipper/vae-torch-celeba
+# For training the VAE model in vae.py
 #
-#   3) Probably using some code from:
-#       - Tingsong Ou:
-#         https://medium.com/@outerrencedl/variational-autoencoder-and-a-bit-kl-divergence-with-pytorch-ce04fd55d0d7
-#       - Alexander van de Kleut (referenced by Tiangsong Ou)
-#         https://avandekleut.github.io/vae/ 
-# Although I haven't used any code from them, this is a nice source about
-# various VAE based algorithms (I tried VanillaVAE only). Code is very organized 
-# and uses pytorch-lightning for training and utilizes DDP that extends to multi-GPU.
-# But it is too complicated for someone trying to implement a basic VAE. Besides there
-# is no inference script for quick testing.
+# 
 
 import argparse
 import torch
@@ -52,8 +36,6 @@ LATENT_DIM = 128
 #
 # transforms applied
 celeb_transform = transforms.Compose([
-    #transforms.Resize(IMAGE_SIZE, antialias=True),
-    #transforms.CenterCrop(IMAGE_SIZE),
     transforms.CenterCrop(148),
     transforms.Resize(PATCH_SIZE),
     transforms.ToTensor(),])  # used when transforming image to tensor
@@ -61,12 +43,11 @@ celeb_transform = transforms.Compose([
 kwargs = {'num_workers': 1, 'pin_memory': True} if not args.cpu else {}
 train_loader = torch.utils.data.DataLoader(
     #datasets.MNIST('../data', train=True, download=True,
-    datasets.CelebA('/mnt/task_runtime/vae-torch-celeba/data/', split='train', download=True,transform=celeb_transform), # transforms.ToTensor()),
+    datasets.CelebA('./data/', split='train', download=True,transform=celeb_transform), # transforms.ToTensor()),
     batch_size=args.batch_size, shuffle=True, **kwargs)
 test_loader = torch.utils.data.DataLoader(
-    datasets.CelebA('/mnt/task_runtime/vae-torch-celeba/data/', split='test', transform=celeb_transform), # transforms.ToTensor()),
+    datasets.CelebA('./data/', split='test', transform=celeb_transform), # transforms.ToTensor()),
     batch_size=args.batch_size, shuffle=False, **kwargs)
-
 
 
 
@@ -74,7 +55,7 @@ test_loader = torch.utils.data.DataLoader(
 model = VAE(LATENT_DIM, PATCH_SIZE).to(device)
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
-# Reconstruction + KL divergence losses summed over all elements and batch
+# Define loss: Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x, x, mu, log_var):
     MSE =F.mse_loss(recon_x, x) # .view(-1, image_dim)
     KLD = -0.5 * torch.mean(1 + log_var - mu.pow(2) - log_var.exp())
@@ -89,8 +70,7 @@ def train(epoch):
     for batch_idx, (data, _) in enumerate(train_loader):
         data = data.to(device)
         optimizer.zero_grad()
-        # Run the dummy model
-        #recon_batch = model(data)
+        # Run the model
         recon_batch, mu, logvar = model(data)
         loss = loss_function(recon_batch, data, mu, logvar)
         loss.backward()
