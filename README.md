@@ -60,7 +60,7 @@ Some examples of interpolation between two pictures by sampling from the latent 
 ### Notes on The Loss function (Training related):
 In ["Kingma and Welling's paper"](https://arxiv.org/pdf/1312.6114.pdf), ELBO (Evidence Lower Bound) is the objective function to be maximized and given in Eqn (3) of the paper as follows:
 
-$$\mathcal{L (\theta, \phi; x)}  =  \mathbb{E}_{z \sim q_{\phi(z|x)}}  [\log p_\theta (x|z)] - D_{KL}(q_\phi(z|x) || p_\theta(z))$$
+$$\mathcal{L (\theta, \phi; x)} =  \mathbb{E}_ {z  \sim q_{\phi(z|x)}} [\log p_\theta (x|z)] - D_{KL}(q_\phi(z|x) || p_\theta(z))$$ 
 
 <!--$$
 \begin{align*}
