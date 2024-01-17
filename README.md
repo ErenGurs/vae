@@ -75,7 +75,9 @@ The loss can be analytically calculated by assuming $p_\theta(.)$ is a normal di
 
   $$ \log p_\theta (x|z) = -\frac{1}{2 \eta} ||x -G_\theta(z)||^2$$
 
-2) **Regularization Loss, $D_{KL}$ :**  The analytical expression of $D_{KL}$ between two Normal distributions are given as:    $$ D_{KL} (\mathcal{N_1} || \mathcal{N_2})= \log \Big(\frac{\sigma_2}{\sigma_1}\Big) + \frac{\sigma_1^2 + (\mu_1 - \mu_2)^2}{2\sigma_2^2} - \frac{1}{2}$$
+
+2) **Regularization Loss, $D_{KL}$ :**  The analytical expression of $D_{KL}$ between two Normal distributions are given as:
+   $$D_ {KL} (\mathcal{N_1} || \mathcal{N_2})= \log \Big(\frac{\sigma_2}{\sigma_1}\Big) + \frac{\sigma_1^2 + (\mu_1 - \mu_2)^2}{2\sigma_2^2} - \frac{1}{2}$$
 We can obtain the closed form expression for $D_{KL}(q_\phi(z|x) || p_\theta(z))$ in ELBO by assuming Normal distributions where $p_\theta(z)$ is from $\mathcal{N}(z;0,I)$ and estimated posterior $q_\phi(z|x)$ is from $\mathcal{N}(z;\mu,\sigma^2)$. Hence for $\sigma_2, \mu_2 =(1,0)$ and $\sigma_1, \mu_1 =(\sigma,\mu)$ the expression becomes:
         $$D_{KL}(q_\phi(z|x) || p_\theta(z)) = -\frac{1}{2} \big(1 +  \log (\sigma^2) -\mu^2 - \sigma^2\big)$$
 
