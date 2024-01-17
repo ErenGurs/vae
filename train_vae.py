@@ -14,7 +14,7 @@ from vae import VAE
 
 parser = argparse.ArgumentParser(description='VAE Example')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-                    help='input batch size for training (default: 128)')
+                    help='input batch size for training (default: 64)')
 parser.add_argument('--epochs', type=int, default=50, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--cpu', action='store_true', default=False,
@@ -43,7 +43,7 @@ celeb_transform = transforms.Compose([
 kwargs = {'num_workers': 1, 'pin_memory': True} if not args.cpu else {}
 train_loader = torch.utils.data.DataLoader(
     #datasets.MNIST('../data', train=True, download=True,
-    datasets.CelebA('./data/', split='train', download=True,transform=celeb_transform), # transforms.ToTensor()),
+    datasets.CelebA('./data/', split='train', download=False,transform=celeb_transform), # transforms.ToTensor()),
     batch_size=args.batch_size, shuffle=True, **kwargs)
 test_loader = torch.utils.data.DataLoader(
     datasets.CelebA('./data/', split='test', transform=celeb_transform), # transforms.ToTensor()),
@@ -53,13 +53,14 @@ test_loader = torch.utils.data.DataLoader(
 
 
 model = VAE(LATENT_DIM, PATCH_SIZE).to(device)
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=1e-3) #0.005)
 
 # Define loss: Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x, x, mu, log_var):
     MSE =F.mse_loss(recon_x, x) # .view(-1, image_dim)
     KLD = -0.5 * torch.mean(1 + log_var - mu.pow(2) - log_var.exp())
-    kld_weight = 0.00025
+    #KLD = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
+    kld_weight = 0.00025  #0.025
     loss = MSE + kld_weight * KLD  
     return loss
 

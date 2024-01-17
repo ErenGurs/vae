@@ -76,18 +76,7 @@ def interpolate_gif(vae, x_1, x_2, n=50):
 
         clip = ImageSequenceClip(list(interpolate_list.transpose(0,2,3,1)), fps=2*(n))
         clip.write_gif('rndpics_interpolate.gif', fps=2*(n))
-    #w = PATCH_SIZE
-    #for img in interpolate_list:
-    #    eren = Image.fromarray(img.reshape(3, PATCH_SIZE, PATCH_SIZE), mode="RGB").resize((256, 256))
-    #    eren.save('eren.png')
- #   images_list = [Image.fromarray(img.reshape(3, PATCH_SIZE, PATCH_SIZE), mode="RGB").resize((256, 256)) for img in interpolate_list]
- #   images_list = images_list + images_list[::-1] # loop back beginning
-    
-    #images_list[0].save(
-    #    'rndpics_interpolate.gif', 
-    #    save_all=True, 
-    #    append_images=images_list[1:],
-    #    loop=1)
+
 
 
 
@@ -107,4 +96,3 @@ save_image(recon1[0], 'rndpics_recon1.png')
 
 interpolate(model, pic0, pic1)
 interpolate_gif(model, pic0, pic1)
-print('Eren')
