@@ -14,7 +14,7 @@ from vae import VAE
 
 parser = argparse.ArgumentParser(description='VAE Example')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-                    help='input batch size for training (default: 64)')
+                    help='input batch size for training (default: 128)')
 parser.add_argument('--epochs', type=int, default=50, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--cpu', action='store_true', default=False,
@@ -60,7 +60,7 @@ def loss_function(recon_x, x, mu, log_var):
     MSE =F.mse_loss(recon_x, x) # .view(-1, image_dim)
     KLD = -0.5 * torch.mean(1 + log_var - mu.pow(2) - log_var.exp())
     #KLD = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
-    kld_weight = 0.00025  #0.025
+    kld_weight = 0.025 #0.00025  #0.025
     loss = MSE + kld_weight * KLD  
     return loss
 
